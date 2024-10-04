@@ -3,78 +3,60 @@
 import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import NavDock from "@/components/NavDock"
+import { cn } from "@/lib/utils";
+import GridPattern from "../../components/ui/grid-pattern";
+import { NeonGradientCard } from "@/components/ui/neon-gradient-card";
+import GuessGame from "@/components/GuessGame"
 
-// Simulated image data (replace with actual Kaggle dataset integration)
-const sampleImages = [
-  { url: "/placeholder.svg?height=300&width=400", isAI: false },
-  { url: "/placeholder.svg?height=300&width=400", isAI: true },
-  { url: "/placeholder.svg?height=300&width=400", isAI: false },
-  { url: "/placeholder.svg?height=300&width=400", isAI: true },
-]
 
 export default function Game() {
-  const [currentImage, setCurrentImage] = useState(sampleImages[0])
-  const [score, setScore] = useState(0)
-  const [totalGuesses, setTotalGuesses] = useState(0)
-  const [guessResult, setGuessResult] = useState<string | null>(null)
-
-  const getNextImage = () => {
-    const nextIndex = Math.floor(Math.random() * sampleImages.length)
-    setCurrentImage(sampleImages[nextIndex])
-    setGuessResult(null)
-  }
-
-  useEffect(() => {
-    getNextImage()
-  }, [])
-
-  const handleGuess = (guessIsAI: boolean) => {
-    setTotalGuesses(totalGuesses + 1)
-    if (guessIsAI === currentImage.isAI) {
-      setScore(score + 1)
-      setGuessResult("Correct!")
-    } else {
-      setGuessResult("Wrong!")
-    }
-    setTimeout(getNextImage, 1500)
-  }
-
   return (
-    <div className="flex items-center justify-center min-h-screen bg-background">
-      <Card className="w-full max-w-md">
-        <CardHeader>
-          <CardTitle className="text-2xl font-bold text-center">Real or AI?</CardTitle>
-        </CardHeader>
-        <CardContent className="flex flex-col items-center space-y-4">
-          <div className="relative w-full aspect-video">
-            <img
-              src={currentImage.url}
-              alt="Guess if this is real or AI-generated"
-              className="object-cover w-full h-full rounded-md"
-            />
-          </div>
-          <div className="text-lg font-semibold">
-            Score: {score} / {totalGuesses}
-          </div>
-          {guessResult && (
-            <div
-              className={`text-lg font-bold ${
-                guessResult === "Correct!" ? "text-green-500" : "text-red-500"
-              }`}
-            >
-              {guessResult}
-            </div>
-          )}
-        </CardContent>
-        <CardFooter className="flex justify-center space-x-4">
-          <Button onClick={() => handleGuess(false)} disabled={guessResult !== null}>
-            Real
-          </Button>
-          <Button onClick={() => handleGuess(true)} disabled={guessResult !== null}>
-            AI
-          </Button>
-        </CardFooter>
-      </Card>
+    <div className="relative flex h-screen w-screen flex-col items-center justify-center overflow-hidden rounded-lg border bg-background md:shadow-xl">
+        <GridPattern
+        squares={[
+          // Smiley
+          [28, 7],
+          [28, 6],
+          [31, 7],
+          [31, 6],
+          [26, 9],
+          [26, 10],
+          [27, 11],
+          [28, 11],
+          [29, 11],
+          [30, 11],
+          [31, 11],
+          [32, 11],
+          [33, 10],
+          [33, 9],
+          // J.C. message
+          [2, 21],
+          [3, 21],
+          [4, 21],
+          [3, 22],
+          [3, 23],
+          [3, 24],
+          [2, 24],
+          [5, 24],
+          [9, 24],
+          [8, 24],
+          [7, 24],
+          [7, 23],
+          [7, 22],
+          [7, 21],
+          [8, 21],
+          [9, 21],
+          [11, 24],
+
+        ]}
+        className={cn( 
+          "[mask-image:radial-gradient(500px_circle_at_center,transparent,white)]",
+          "inset-x-0 inset-y-[-30%] h-[200%] skew-y-12 bg-white",
+        )}
+        />
+        <NavDock />
+        <GuessGame />
     </div>
   )
 }

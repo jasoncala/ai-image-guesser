@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { NeonGradientCard } from "@/components/ui/neon-gradient-card";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card"
+import { CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card"
 
 export default function EnterName() {
   const [playerName, setPlayerName] = useState('');
