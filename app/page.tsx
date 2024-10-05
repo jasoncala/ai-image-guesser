@@ -1,5 +1,4 @@
 'use client';
-import { useRouter } from 'next/navigation';
 import { cn } from "@/lib/utils";
 import GridPattern from "../components/ui/grid-pattern";
 import EnterName from '@/components/EnterName';
