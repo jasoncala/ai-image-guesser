@@ -4,19 +4,23 @@ import { useRouter } from 'next/navigation';
 import { cn } from "@/lib/utils";
 import GridPattern from "../components/ui/grid-pattern";
 import EnterName from '@/components/EnterName';
-import { HomeIcon, MailIcon } from "lucide-react";
 import NavDock from '@/components/NavDock';
 
 export type IconProps = React.HTMLAttributes<SVGElement>;
 
 export default function Home() {
-  const [playerName, setPlayerName] = useState('');
+  // const [playerName, setPlayerName] = useState('');
   const router = useRouter();
 
+  /*
   const startGame = () => {
     if (playerName.trim()) {
       router.push(`/game?name=${playerName}`);
     }
+  };
+  */
+  const startGame = () => {
+    router.push(`/game`);
   };
 
   return (

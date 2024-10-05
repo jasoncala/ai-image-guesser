@@ -1,12 +1,8 @@
 "use client"
 
-import { useState, useEffect } from "react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import NavDock from "@/components/NavDock"
 import { cn } from "@/lib/utils";
 import GridPattern from "../../components/ui/grid-pattern";
-import { NeonGradientCard } from "@/components/ui/neon-gradient-card";
 import GuessGame from "@/components/GuessGame"
 
 
