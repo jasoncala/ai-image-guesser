@@ -13,31 +13,55 @@ const sampleImages = [
     { url: "/placeholder.svg?height=300&width=400", isAI: true },
   ]
 
+interface ImageData {
+    url: string;
+    type: 'ai' | 'real';
+}
+
 export default function GuessGame() {
     const [currentImage, setCurrentImage] = useState(sampleImages[0])
     const [score, setScore] = useState(0)
     const [totalGuesses, setTotalGuesses] = useState(0)
     const [guessResult, setGuessResult] = useState<string | null>(null)
+
+    const [imageData, setImageData] = useState<ImageData | null>(null);
+    const [userGuess, setUserGuess] = useState<string | null>(null);
+    const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
+    const [feedback, setFeedback] = useState<string | null>(null);
   
-    const getNextImage = () => {
-      const nextIndex = Math.floor(Math.random() * sampleImages.length)
-      setCurrentImage(sampleImages[nextIndex])
-      setGuessResult(null)
+    // Fetch a new image from the API
+    const getNextImage = async () => {
+      const res = await fetch('/api/images'); 
+      const data: ImageData = await res.json();
+      setImageData(data);
+      console.log(data);
+      // Reset game state
+      setUserGuess(null);
+      setIsCorrect(null);
+      setFeedback(null);
+      //const nextIndex = Math.floor(Math.random() * sampleImages.length)
+      //setCurrentImage(sampleImages[nextIndex])
+      //setGuessResult(null)
     }
   
     useEffect(() => {
       getNextImage()
     }, [])
   
-    const handleGuess = (guessIsAI: boolean) => {
-      setTotalGuesses(totalGuesses + 1)
-      if (guessIsAI === currentImage.isAI) {
-        setScore(score + 1)
-        setGuessResult("Correct!")
-      } else {
-        setGuessResult("Wrong!")
-      }
-      setTimeout(getNextImage, 1500)
+    const handleGuess = (guess: 'ai' | 'real') => {
+      if (!imageData) return;
+      setUserGuess(guess);
+      const correct = guess === imageData.type;
+      setIsCorrect(correct);
+      setFeedback(correct ? "Correct!" : "Wrong!");    
+      //setTotalGuesses(totalGuesses + 1)
+      //if (guessIsAI === currentImage.isAI) {
+       // setScore(score + 1)
+       // setGuessResult("Correct!")
+      //} else {
+       // setGuessResult("Wrong!")
+      //}
+      //setTimeout(getNextImage, 1500)
     }
 
   return (
@@ -48,11 +72,15 @@ export default function GuessGame() {
         </CardHeader>
         <CardContent className="flex flex-col items-center space-y-4">
           <div className="relative w-full aspect-video">
-            <img
-              src={currentImage.url}
-              alt="Guess if this is real or AI-generated"
-              className="object-cover w-full h-full rounded-md"
-            />
+            {imageData ? (
+                <img
+                src={imageData.url}
+                alt="Guess if this is real or AI-generated"
+                className="object-cover w-full h-full rounded-md"
+              />
+            ) : (
+                <p>Loading image...</p>
+            )}
           </div>
           <div className="text-lg font-semibold">
             Score: {score} / {totalGuesses}
@@ -68,10 +96,10 @@ export default function GuessGame() {
           )}
         </CardContent>
         <CardFooter className="flex justify-center space-x-4">
-          <Button onClick={() => handleGuess(false)} disabled={guessResult !== null}>
+          <Button onClick={() => handleGuess('real')} disabled={guessResult !== null}>
             Real
           </Button>
-          <Button onClick={() => handleGuess(true)} disabled={guessResult !== null}>
+          <Button onClick={() => handleGuess('ai')} disabled={guessResult !== null}>
             AI
           </Button>
         </CardFooter>
