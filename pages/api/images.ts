@@ -1,20 +1,22 @@
 import { Storage } from '@google-cloud/storage';
-import path from 'path';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
-// Google Cloud setup using service account JSON file
+// Google Cloud setup using environment variables
 const storage = new Storage({
-  keyFilename: path.join(process.cwd(), process.env.GOOGLE_APPLICATION_CREDENTIALS || ''),
+  projectId: process.env.GOOGLE_CLOUD_PROJECT_ID,
+  credentials: {
+    private_key: process.env.GOOGLE_CLOUD_PRIVATE_KEY?.replace(/\\n/g, '\n'),  // Replace escaped newlines with actual newlines
+    client_email: process.env.GOOGLE_CLOUD_CLIENT_EMAIL,
+  },
 });
 
-const bucketName = 'ai-image-guesser-images';  // Replace with your actual bucket name
+const bucketName = 'ai-image-guesser-images'; 
 
-// Helper function to get images from the folder (either 'ai' or 'real')
 async function getImagesFromFolder(folder: 'ai' | 'real') {
   try {
     console.log(`Fetching images from folder: ${folder}`);
     const [files] = await storage.bucket(bucketName).getFiles({
-      prefix: `${folder}/`,  // Fetch images from 'ai/' or 'real/' folder
+      prefix: `${folder}/`,
     });
 
     if (!files || files.length === 0) {
@@ -22,9 +24,6 @@ async function getImagesFromFolder(folder: 'ai' | 'real') {
       throw new Error('No images found');
     }
 
-    console.log(`Found ${files.length} files in folder: ${folder}`);
-
-    // Extract URLs of images from the folder
     const imageUrls = files.map(file => `https://storage.googleapis.com/${bucketName}/${file.name}`);
     return imageUrls;
   } catch (error) {
@@ -39,22 +38,18 @@ async function getImagesFromFolder(folder: 'ai' | 'real') {
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   try {
-    // Randomly select either 'ai' or 'real'
     const isAI = Math.random() < 0.5 ? 'ai' : 'real';
     console.log(`Selected folder: ${isAI}`);
 
-    // Fetch images from the selected folder
     const imageUrls = await getImagesFromFolder(isAI);
 
     if (imageUrls.length === 0) {
       return res.status(404).json({ message: 'No images found in the folder' });
     }
 
-    // Select a random image from the fetched URLs
     const randomImage = imageUrls[Math.floor(Math.random() * imageUrls.length)];
     console.log(`Selected random image: ${randomImage}`);
 
-    // Return the selected image and its type (either 'ai' or 'real')
     res.status(200).json({ url: randomImage, type: isAI });
   } catch (error) {
     if (error instanceof Error) {
