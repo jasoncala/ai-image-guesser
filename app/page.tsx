@@ -8,7 +8,6 @@ import NavDock from '@/components/NavDock';
 export type IconProps = React.HTMLAttributes<SVGElement>;
 
 export default function Home() {
-  const router = useRouter();
 
   return (
     <div className="relative flex h-screen w-screen flex-col items-center justify-center overflow-hidden rounded-lg border bg-background md:shadow-xl">
