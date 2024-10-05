@@ -1,5 +1,4 @@
 'use client';
-import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { cn } from "@/lib/utils";
 import GridPattern from "../components/ui/grid-pattern";
@@ -9,19 +8,7 @@ import NavDock from '@/components/NavDock';
 export type IconProps = React.HTMLAttributes<SVGElement>;
 
 export default function Home() {
-  // const [playerName, setPlayerName] = useState('');
   const router = useRouter();
-
-  /*
-  const startGame = () => {
-    if (playerName.trim()) {
-      router.push(`/game?name=${playerName}`);
-    }
-  };
-  */
-  const startGame = () => {
-    router.push(`/game`);
-  };
 
   return (
     <div className="relative flex h-screen w-screen flex-col items-center justify-center overflow-hidden rounded-lg border bg-background md:shadow-xl">
